@@ -13,7 +13,7 @@ public class SignupRequest {
     @NotBlank
     @Size(max = 150)
     
-    private String email;
+    private String name;
     
     private Set<String> role;
     
@@ -29,15 +29,17 @@ public class SignupRequest {
         this.username = username;
     }
  
-    public String getEmail() {
-        return email;
-    }
+   
  
-    public void setEmail(String email) {
-        this.email = email;
-    }
- 
-    public String getPassword() {
+    public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getPassword() {
         return password;
     }
  
