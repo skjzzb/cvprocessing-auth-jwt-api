@@ -50,6 +50,7 @@ public class ProfileController {
 				existedProfile.setCountry(profile.getCountry());
 				existedProfile.setPinCode(profile.getPinCode());
 				existedProfile.setState(profile.getState());
+				existedProfile.setContactNo(profile.getContactNo());
 				profServiceObj.updateProfile(existedProfile);
 				return new ResponseEntity<>(profServiceObj.updateProfile(existedProfile),HttpStatus.OK);
 			}
