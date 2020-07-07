@@ -1,12 +1,16 @@
 package com.bezkoder.springjwt.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "profile")
@@ -34,8 +38,8 @@ public class Profile {
 	@Column(name="about_me")
 	String aboutMe;
 	
-	
-	@OneToOne(mappedBy = "profile")
+	@JsonBackReference 
+	@OneToOne(mappedBy = "profile",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	User user;
 
 	public Profile() {

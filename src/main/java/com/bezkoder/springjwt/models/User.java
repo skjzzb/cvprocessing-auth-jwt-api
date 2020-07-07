@@ -8,6 +8,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(	name = "users", 
 		uniqueConstraints = { 
@@ -39,8 +41,9 @@ public class User {
 	private Set<Role> roles = new HashSet<>();
 	
 	
+	@OneToOne(fetch = FetchType.EAGER)
+	@JsonManagedReference
 	@JoinColumn(name = "prof_id")
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	Profile profile;
 
 	
@@ -114,4 +117,11 @@ public class User {
 		p.setUser(null);
 	}
 
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", username=" + username + ", name=" + name + ", password=" + password + ", roles="
+				+ roles + "]";
+	}
+
+	
 }
