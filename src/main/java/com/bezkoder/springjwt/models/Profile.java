@@ -38,6 +38,29 @@ public class Profile {
 	@Column(name="about_me")
 	String aboutMe;
 	
+	@Column(name="contact_no")
+	String contactNo;
+	
+	@Column(name="profile_picture")
+	String profilePicture;
+	
+	public String getContactNo() {
+		return contactNo;
+	}
+
+	public void setContactNo(String contactNo) {
+		this.contactNo = contactNo;
+	}
+
+	public String getProfilePicture() {
+		return profilePicture;
+	}
+
+	public void setProfilePicture(String profilePicture) {
+		this.profilePicture = profilePicture;
+	}
+
+
 	@JsonBackReference 
 	@OneToOne(mappedBy = "profile",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	User user;
@@ -46,8 +69,9 @@ public class Profile {
 		
 	}
 	
+	
 	public Profile(Integer profId, String address, String city, String state, String country, String pinCode,
-			String aboutMe) {
+			String aboutMe, String contactNo, String profilePicture) {
 		super();
 		this.profId = profId;
 		this.address = address;
@@ -56,6 +80,8 @@ public class Profile {
 		this.country = country;
 		this.pinCode = pinCode;
 		this.aboutMe = aboutMe;
+		this.contactNo = contactNo;
+		this.profilePicture = profilePicture;
 	}
 
 	public Integer getProfId() {
@@ -121,11 +147,13 @@ public class Profile {
 		this.user = user;
 	}
 
-
 	@Override
 	public String toString() {
 		return "Profile [profId=" + profId + ", address=" + address + ", city=" + city + ", state=" + state
-				+ ", country=" + country + ", pinCode=" + pinCode + ", aboutMe=" + aboutMe + "]";
+				+ ", country=" + country + ", pinCode=" + pinCode + ", aboutMe=" + aboutMe + ", contactNo=" + contactNo
+				+ ", profilePicture=" + profilePicture + "]";
 	}
+
+
 	
 }
