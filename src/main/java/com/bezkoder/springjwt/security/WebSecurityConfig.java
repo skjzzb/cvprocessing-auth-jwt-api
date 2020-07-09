@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import com.bezkoder.springjwt.security.jwt.AuthEntryPointJwt;
 import com.bezkoder.springjwt.security.jwt.AuthTokenFilter;
@@ -77,4 +78,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	      source.registerCorsConfiguration("/**", configuration);
 	      return source;
 	  }
+	 public void addCorsMappings(CorsRegistry registry) {
+	        registry.addMapping("/**").allowedOrigins("*").allowedHeaders("*").allowedMethods("*");
+	    }
 }
