@@ -69,16 +69,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
-	 @Bean
-	  CorsConfigurationSource corsConfigurationSource() {
-	      CorsConfiguration configuration = new CorsConfiguration();
-	      configuration.setAllowedOrigins(Arrays.asList("https://localhost:4200"));
-	      configuration.setAllowedMethods(Arrays.asList("GET","POST"));
-	      UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-	      source.registerCorsConfiguration("/**", configuration);
-	      return source;
-	  }
-	 public void addCorsMappings(CorsRegistry registry) {
-	        registry.addMapping("/**").allowedOrigins("*").allowedHeaders("*").allowedMethods("*");
-	    }
+	
 }
