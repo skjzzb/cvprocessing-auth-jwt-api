@@ -22,28 +22,24 @@ import com.bezkoder.springjwt.security.services.ProfileService;
 @RestController
 @RequestMapping("/api")
 public class ProfileController {
-	
+
 	@Autowired
 	ProfileService profServiceObj;
-	
+
 	@Autowired
 	UserRepository userRepository;
-	
-	
+
 	@PutMapping("/profile/{userId}")
 	public ResponseEntity<?> editProfile(@RequestBody Profile profile, @PathVariable long userId) {
 
 		User user = userRepository.findById(userId).orElse(null);
-		if(user != null) {
+		if (user != null) {
 			Profile existedProfile = user.getProfile();
-			if(existedProfile == null) 
-			{
+			if (existedProfile == null) {
 				profServiceObj.insertProfile(profile);
 				user.addProfile(profile);
-				return new ResponseEntity<>(profServiceObj.insertProfile(profile),HttpStatus.OK);
-			}
-			else
-			{
+				return new ResponseEntity<>(profServiceObj.insertProfile(profile), HttpStatus.OK);
+			} else {
 				existedProfile.setAboutMe(profile.getAboutMe());
 				existedProfile.setAddress(profile.getAddress());
 				existedProfile.setCity(profile.getCity());
@@ -52,16 +48,23 @@ public class ProfileController {
 				existedProfile.setState(profile.getState());
 				existedProfile.setContactNo(profile.getContactNo());
 				profServiceObj.updateProfile(existedProfile);
-				return new ResponseEntity<>(profServiceObj.updateProfile(existedProfile),HttpStatus.OK);
+				return new ResponseEntity<>(profServiceObj.updateProfile(existedProfile), HttpStatus.OK);
 			}
-			
+
 		}
-		return new ResponseEntity<>("User not found",HttpStatus.OK);
+		return new ResponseEntity<>("User not found", HttpStatus.OK);
+	}
+
+	@GetMapping("/user/{userId}")
+	public ResponseEntity<?> getUserById(@PathVariable long userId) {
+		return new ResponseEntity<>(userRepository.findById(userId), HttpStatus.OK);
 	}
 	
-	@GetMapping("/user/{userId}")
-	public ResponseEntity<?> getUserById(@PathVariable long userId){
-		return new ResponseEntity<>(userRepository.findById(userId),HttpStatus.OK);
+
+	@GetMapping("/user")
+	public ResponseEntity<?> getAllUsers() {
+		return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
 	}
+
 
 }
