@@ -1,18 +1,30 @@
 package com.bezkoder.springjwt.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Lob;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 
 @Entity
 @Table(name = "profile")
 public class Profile {
 	@Id
+	@Lob
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "prof_id")
 	Integer profId;
@@ -36,12 +48,57 @@ public class Profile {
 	String aboutMe;
 	
 	@OneToOne(mappedBy = "profile")
+
+	@Column(name="contact_no")
+	String contactNo;
+	
+	@Column(name="profile_picture")
+	String profilePicture;
+	
+	@Column(name="size")
+	byte[] size;
+	
+	public byte[] getSize() {
+		return size;
+	}
+
+	public void setSize(byte[] size) {
+		this.size = size;
+	}
+
+	public String getContactNo() {
+		return contactNo;
+	}
+
+	public void setContactNo(String contactNo) {
+		this.contactNo = contactNo;
+	}
+
+	public String getProfilePicture() {
+		return profilePicture;
+	}
+
+	public void setProfilePicture(String profilePicture) {
+		this.profilePicture = profilePicture;
+	}
+
+
+	@JsonBackReference 
+	@OneToOne(mappedBy = "profile",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	User user;
 
 	public Profile() {
 		
 	}
 	
+
+	public Profile(String file,Integer profId) {
+		super();
+		this.profilePicture = file;
+		this.profId = profId;
+	}
+	
+
 	public Profile(Integer profId, String address, String city, String state, String country, String pinCode,
 			String aboutMe) {
 		super();

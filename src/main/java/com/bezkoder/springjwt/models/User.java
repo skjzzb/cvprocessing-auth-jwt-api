@@ -7,6 +7,9 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(	name = "users", 
@@ -14,6 +17,7 @@ import javax.validation.constraints.Size;
 			@UniqueConstraint(columnNames = "username"),
 			@UniqueConstraint(columnNames = "name") 
 		})
+
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -113,5 +117,16 @@ public class User {
 		this.profile = null;
 		p.setUser(null);
 	}
+
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", username=" + username + ", name=" + name + ", password=" + password + ", roles="
+				+ roles + "]";
+	}
+
+	
+
+	
 
 }
