@@ -1,9 +1,14 @@
 package com.bezkoder.springjwt.controllers;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,11 +18,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bezkoder.springjwt.models.Profile;
 import com.bezkoder.springjwt.models.Role;
 import com.bezkoder.springjwt.models.User;
+import com.bezkoder.springjwt.repository.ProfileRepository;
 import com.bezkoder.springjwt.repository.UserRepository;
 import com.bezkoder.springjwt.security.services.ProfileService;
 import com.bezkoder.springjwt.security.services.RolesService;
@@ -35,6 +43,9 @@ public class ProfileController {
 	
 	@Autowired
 	RolesService roleServiceObj;
+	
+	@Autowired
+	ProfileRepository profileRep;
 
 	@PutMapping("/profile/{userId}")
 	public ResponseEntity<?> editProfile(@RequestBody Profile profile, @PathVariable long userId) {
@@ -90,5 +101,45 @@ public class ProfileController {
 		}
 		return new ResponseEntity<>(u, HttpStatus.OK);
 	}
+	
+	@Value("${file.path}")
+	private String filepath;
+
+	  @PutMapping("/upload/{profId}")
+	public ResponseEntity<?> uplaodImage(@RequestParam("imageFile") MultipartFile file,@PathVariable Integer profId) throws IOException 
+	  {
+	      //Optional<Profile> val = profServiceObj.findById(profId);
+		  System.out.println("-------------------"+profId);
+		  Optional<Profile> val = profServiceObj.findById(profId);
+	      if (val.isPresent()) {
+	            System.out.println(val);
+	        } else {
+	            System.out.printf("No found with id %d%n", profId);
+	        }
+		  
+	      Profile p = val.get();
+	      
+		  System.out.println("Original Image Byte Size - " + file.getBytes().length);
+		  
+		  System.out.println("File name : "+file.getOriginalFilename());
+		  
+		  File convertFile = new File(filepath+file.getOriginalFilename());
+		  convertFile.createNewFile();
+		  FileOutputStream fout = new FileOutputStream(convertFile);
+		  fout.write(file.getBytes());
+		  fout.close();
+		  
+		  
+		  p.setProfilePicture(filepath+file.getOriginalFilename());
+		 
+		  
+		  profileRep.save(p);
+		  //profServiceObj.insertProfilePhoto(file);
+		  
+		  System.out.println("successful");
+		  return new ResponseEntity<>("Saved successfully",HttpStatus.OK); 
+	  
+	      }
+
 
 }
