@@ -1,5 +1,7 @@
 package com.bezkoder.springjwt.security.services;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,11 @@ public class ProfileServiceImpl implements ProfileService {
 	public Profile updateProfile(Profile profile) {
 		profileRepoObj.save(profile);
 		return profileRepoObj.save(profile);
+	}
+
+	@Override
+	public Optional<Profile> findById(Integer id) {
+		return profileRepoObj.findById(id);
 	}
 
 }
