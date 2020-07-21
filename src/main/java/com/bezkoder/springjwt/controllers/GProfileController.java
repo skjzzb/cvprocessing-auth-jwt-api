@@ -62,10 +62,16 @@ public class GProfileController {
 		return new ResponseEntity<>("User not found", HttpStatus.OK);
 	}
 
-	@GetMapping("/user/{userId}")
-	public ResponseEntity<?> getUserById(@PathVariable long userId) {
-		return new ResponseEntity<>(userRepository.findById(userId), HttpStatus.OK);
+//	@GetMapping("/user/{userId}")
+//	public ResponseEntity<?> getUserById(@PathVariable long userId) {
+//		return new ResponseEntity<>(userRepository.findById(userId), HttpStatus.OK);
+//	}
+	
+	@GetMapping("/user/{userName}")
+	public ResponseEntity<?> getUserByUserName(@PathVariable String userName) {
+		return new ResponseEntity<>(userRepository.findByUsername(userName), HttpStatus.OK);
 	}
+	
 	
 	//http://localhost:8880/api/roles
 	@GetMapping("/user")
