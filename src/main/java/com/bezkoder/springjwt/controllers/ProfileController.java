@@ -1,16 +1,28 @@
 package com.bezkoder.springjwt.controllers;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Stack;
 
+
+import org.apache.commons.io.IOUtils;
+import org.apache.tomcat.util.file.ConfigurationSource.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.header.writers.frameoptions.StaticAllowFromStrategy;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.support.ServletContextResource;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bezkoder.springjwt.models.Profile;
@@ -46,7 +59,31 @@ public class ProfileController {
 	
 	@Autowired
 	ProfileRepository profileRep;
-
+	
+	@GetMapping("/image/{profId}")  
+	public ResponseEntity<?> getProfileImage(@PathVariable Integer profId) throws FileNotFoundException
+	{
+		byte[] media=null;
+	Optional<Profile> p =profServiceObj.findById(profId);
+	Profile pro= p.get();
+	System.out.println(pro.getProfilePicture());
+	if(pro.getProfilePicture()!=null)
+	{
+	FileInputStream fin = new FileInputStream(pro.getProfilePicture());  
+    BufferedInputStream bin = new BufferedInputStream(fin);  
+		    try {
+				 media = IOUtils.toByteArray(bin);
+			} catch (IOException e) {
+				System.out.println("-------------------");
+				e.printStackTrace();
+			}
+		    return new ResponseEntity<>(media, HttpStatus.OK);
+	}else
+	{
+		return new ResponseEntity<>("image not uploaded", HttpStatus.NOT_FOUND);	
+	}
+	}
+	
 	@PutMapping("/profile/{userId}")
 	public ResponseEntity<?> editProfile(@RequestBody Profile profile, @PathVariable long userId) {
 
@@ -104,11 +141,25 @@ public class ProfileController {
 	
 	@Value("${file.path}")
 	private String filepath;
+	
+	public String createFolder()
+	{
+		System.out.println(System.getProperty("java.io.tmpdir"));
+	    final String baseTempPath = System.getProperty("java.io.tmpdir");
+
+	    File tempDir = new File(baseTempPath + File.separator + "images");
+	    if (tempDir.exists() == false) {
+	        tempDir.mkdir();
+	    }
+	   System.out.println(tempDir);
+	   return tempDir.getPath();
+	}
 
 	  @PutMapping("/upload/{profId}")
 	public ResponseEntity<?> uplaodImage(@RequestParam("imageFile") MultipartFile file,@PathVariable Integer profId) throws IOException 
 	  {
-	      //Optional<Profile> val = profServiceObj.findById(profId);
+	    String systemPath=createFolder();
+	    System.out.println(systemPath);
 		  System.out.println("-------------------"+profId);
 		  Optional<Profile> val = profServiceObj.findById(profId);
 	      if (val.isPresent()) {
@@ -123,16 +174,15 @@ public class ProfileController {
 		  
 		  System.out.println("File name : "+file.getOriginalFilename());
 		  
-		  File convertFile = new File(filepath+file.getOriginalFilename());
+		  File convertFile = new File(systemPath+File.separator+file.getOriginalFilename());
 		  convertFile.createNewFile();
 		  FileOutputStream fout = new FileOutputStream(convertFile);
 		  fout.write(file.getBytes());
 		  fout.close();
 		  
 		  
-		  p.setProfilePicture(filepath+file.getOriginalFilename());
+		  p.setProfilePicture(systemPath+File.separator+file.getOriginalFilename());
 		 
-		  
 		  profileRep.save(p);
 		  //profServiceObj.insertProfilePhoto(file);
 		  
