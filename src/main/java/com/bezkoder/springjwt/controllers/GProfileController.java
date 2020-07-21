@@ -24,7 +24,7 @@ import com.bezkoder.springjwt.security.services.RolesService;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/gapi")
 public class GProfileController {
 
 	@Autowired
