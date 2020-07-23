@@ -23,12 +23,18 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bezkoder.springjwt.models.ERole;
 import com.bezkoder.springjwt.models.Role;
 import com.bezkoder.springjwt.models.User;
+import com.bezkoder.springjwt.models.GUser;
+
 import com.bezkoder.springjwt.payload.request.LoginRequest;
 import com.bezkoder.springjwt.payload.request.SignupRequest;
+import com.bezkoder.springjwt.payload.request.GSignupRequest;
+
 import com.bezkoder.springjwt.payload.response.JwtResponse;
 import com.bezkoder.springjwt.payload.response.MessageResponse;
 import com.bezkoder.springjwt.repository.RoleRepository;
 import com.bezkoder.springjwt.repository.UserRepository;
+import com.bezkoder.springjwt.repository.GUserRepository;
+
 import com.bezkoder.springjwt.security.jwt.JwtUtils;
 import com.bezkoder.springjwt.security.services.UserDetailsImpl;
 
@@ -43,6 +49,8 @@ public class AuthController {
 
 	@Autowired
 	UserRepository userRepository;
+	@Autowired
+	GUserRepository guserRepository;
 
 	@Autowired
 	RoleRepository roleRepository;
@@ -143,4 +151,74 @@ public class AuthController {
 
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 	}
+	@PostMapping("/gsignup")
+	public ResponseEntity<?> registerGUser(@Valid @RequestBody GSignupRequest signUpRequest) {
+		if (guserRepository.existsByUsername(signUpRequest.getUsername())) {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: Email is already in use!"));
+		}
+
+		if (guserRepository.existsByName(signUpRequest.getName())) {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: Name is already in use!"));
+		}
+
+		// Create new user's account
+		GUser user = new GUser(signUpRequest.getUsername(), 
+							 signUpRequest.getName()
+							 );
+
+		Set<String> strRoles = signUpRequest.getRole();
+		Set<Role> roles = new HashSet<>();
+
+		if (strRoles == null) {
+			Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+			roles.add(userRole);
+		} else {
+			strRoles.forEach(role -> {
+				switch (role) {
+				case "admin":
+					Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+					roles.add(adminRole);
+
+					break;
+				case "mod":
+					Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+					roles.add(modRole);
+
+					break;
+					///
+				case "hr":
+					Role hrRole = roleRepository.findByName(ERole.ROLE_HR)
+							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+					roles.add(hrRole);
+
+					break;
+				case "panel":
+					Role panelRole = roleRepository.findByName(ERole.ROLE_PANEL)
+							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+					roles.add(panelRole);
+
+					break;
+					///
+
+				default:
+					Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+					roles.add(userRole);
+				}
+			});
+		}
+
+		user.setRoles(roles); 
+		guserRepository.save(user);
+
+		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+	}
+
 }
