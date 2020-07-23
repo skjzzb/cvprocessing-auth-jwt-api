@@ -90,11 +90,11 @@ public class AuthController {
 					.body(new MessageResponse("Error: Email is already in use!"));
 		}
 
-//		if (userRepository.existsByName(signUpRequest.getName())) {
-//			return ResponseEntity
-//					.badRequest()
-//					.body(new MessageResponse("Error: Name is already in use!"));
-//		}
+		if (userRepository.existsByName(signUpRequest.getName())) {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: Name is already-- in use!"));
+		}
 
 		// Create new user's account
 		User user = new User(signUpRequest.getUsername(), 
@@ -152,18 +152,18 @@ public class AuthController {
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 	}
 	@PostMapping("/gsignup")
-	public ResponseEntity<?> registerGUser(@Valid @RequestBody GSignupRequest signUpRequest) {
+	public ResponseEntity<?> registerGUser( @RequestBody GSignupRequest signUpRequest) {
 		if (guserRepository.existsByUsername(signUpRequest.getUsername())) {
 			return ResponseEntity
 					.badRequest()
 					.body(new MessageResponse("Error: Email is already in use!"));
 		}
 
-		if (guserRepository.existsByName(signUpRequest.getName())) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Name is already in use!"));
-		}
+//		if (guserRepository.existsByName(signUpRequest.getName())) {
+//			return ResponseEntity
+//					.badRequest()
+//					.body(new MessageResponse("Error: Name is already in use!"));
+//		}
 
 		// Create new user's account
 		GUser user = new GUser(signUpRequest.getUsername(), 
