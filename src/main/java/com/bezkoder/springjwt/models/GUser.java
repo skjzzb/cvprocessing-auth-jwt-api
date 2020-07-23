@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Table(	name = "gusers", 
 		uniqueConstraints = { 
 			@UniqueConstraint(columnNames = "username"),
-			@UniqueConstraint(columnNames = "name") 
+			//@UniqueConstraint(columnNames = "name") 
 		})
 public class GUser {
 	@Id
