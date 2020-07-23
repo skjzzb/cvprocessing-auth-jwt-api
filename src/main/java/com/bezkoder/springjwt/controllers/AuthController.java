@@ -40,7 +40,8 @@ import com.bezkoder.springjwt.security.services.UserDetailsImpl;
 
 
 
-@CrossOrigin(allowedHeaders = "*")
+
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
