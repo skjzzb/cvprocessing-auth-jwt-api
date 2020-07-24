@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
@@ -35,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.support.ServletContextResource;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bezkoder.springjwt.models.ERole;
 import com.bezkoder.springjwt.models.Profile;
 import com.bezkoder.springjwt.models.Role;
 import com.bezkoder.springjwt.models.User;
@@ -190,6 +192,31 @@ public class ProfileController {
 		  return new ResponseEntity<>("Saved successfully",HttpStatus.OK); 
 	  
 	      }
-
+	  
+	    //http://localhost:8880/api/get-all-users/panel
+	    @GetMapping("/get-all-users/panel")
+		ResponseEntity<?> getAllUsersPanel()
+		{
+	    	Set<Role> roleSet = new HashSet<Role>();
+	    	Role role = new Role();
+	    	role.setId(5);
+	    	role.setName(ERole.ROLE_PANEL);
+	    	roleSet.add(role);
+	    	List <User> userList = userRepository.findByRoles(roleSet);
+	    	return new ResponseEntity<>(userList, HttpStatus.OK);
+		}
+	    
+        //http://localhost:8880/api/get-all-users/hr
+	    @GetMapping("/get-all-users/hr")
+	    ResponseEntity<?> getAllUsersHr()
+	    {
+	    	Set<Role> roleSet = new HashSet<Role>();
+	    	Role role = new Role();
+	    	role.setId(4);
+	    	role.setName(ERole.ROLE_HR);
+	    	roleSet.add(role);
+	    	List <User> userList = userRepository.findByRoles(roleSet);
+	    	return new ResponseEntity<>(userList, HttpStatus.OK);
+	    }
 
 }
