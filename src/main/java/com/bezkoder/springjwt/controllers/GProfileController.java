@@ -96,5 +96,5 @@ public class GProfileController {
 		}
 		return new ResponseEntity<>(u, HttpStatus.OK);
 	}
-
+	
 }
