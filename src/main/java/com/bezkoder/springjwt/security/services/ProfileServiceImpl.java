@@ -31,4 +31,9 @@ public class ProfileServiceImpl implements ProfileService {
 		return profileRepoObj.findById(id);
 	}
 
+	/*@Override
+	public Profile findById(long userId) {
+		return profileRepoObj.findById(userId);
+	}*/
+
 }

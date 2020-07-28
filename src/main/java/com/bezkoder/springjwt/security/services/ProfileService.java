@@ -9,4 +9,5 @@ public interface ProfileService {
 	Profile insertProfile(Profile profile);
 	Profile updateProfile(Profile profile);
 	Optional<Profile> findById(Integer id);
+	//Profile findById(long userId);
 }

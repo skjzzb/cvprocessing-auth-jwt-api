@@ -25,6 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.header.writers.frameoptions.StaticAllowFromStrategy;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -219,4 +220,19 @@ public class ProfileController {
 	    	return new ResponseEntity<>(userList, HttpStatus.OK);
 	    }
 
+	    @DeleteMapping("/profileDelete")
+		public ResponseEntity<?> deleteProfile(@RequestParam long userId) {
+	    	Integer profId=null;
+	    	
+	    	System.out.println("in profile delete controller");
+			User user = userRepository.findById(userId).orElse(null);
+			System.out.println("user is :"+user);
+			userRepository.deleteById(userId);
+			profId = user.getProfile().getProfId();
+			System.out.println(profId);
+			profileRep.deleteById(profId);
+			
+			return new ResponseEntity<>("sucessfully deleted", HttpStatus.OK);
+			
+	    }
 }
